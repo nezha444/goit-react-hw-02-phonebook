@@ -4,6 +4,7 @@ import { ContactList } from './Phonebook/ContactList';
 import Filter from './Phonebook/Filter';
 import { nanoid } from 'nanoid';
 
+const LOCAL_NAME = 'Contacts';
 export class App extends Component {
   state = {
     contacts: [
@@ -14,6 +15,29 @@ export class App extends Component {
     ],
     filter: '',
   };
+
+  componentDidMount(_, prevState) {
+    const localDataContacts = localStorage.getItem(LOCAL_NAME);
+    const parsedLocalDataContacts = JSON.parse(localDataContacts);
+    console.log(parsedLocalDataContacts);
+
+    if (parsedLocalDataContacts.length !== this.state.contacts.length) {
+      this.setState({ contacts: parsedLocalDataContacts });
+    }
+  }
+
+  // записать контакты в хранилище, записать контакты из хранилища в стэйт,
+  componentDidUpdate(_, prevState) {
+    // записали в хранилище state
+    localStorage.setItem(
+      LOCAL_NAME,
+      JSON.stringify(Array.from(this.state.contacts))
+    );
+    // const localDataContacts = localStorage.getItem(LOCAL_NAME);
+    // const parceLocalDataContats = JSON.parse(localDataContacts);
+    // console.log(parceLocalDataContats);
+    // this.setState({ contacts: parceLocalDataContats });
+  }
 
   hendleChangeFilter = event => {
     this.setState({ filter: event.target.value });
