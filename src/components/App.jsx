@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import ContactForm from './Phonebook/ContactForm';
-import ContactList from './Phonebook/ContactList';
+import { ContactList } from './Phonebook/ContactList';
 import Filter from './Phonebook/Filter';
+import { nanoid } from 'nanoid';
 
 export class App extends Component {
   state = {
@@ -18,41 +19,45 @@ export class App extends Component {
     this.setState({ filter: event.target.value });
   };
 
-  handleSubmit = event => {
-    event.preventDefault();
-    const form = event.currentTarget
-    const name = form.elements.name.value
-    const number = form.elements.number.value
+  handleSubmit = ({ name, number }) => {
     const newContact = {
-      id: `id-${this.state.contacts.length + 1}`,
-      name: name,
-      number: number,
+      id: `id-${nanoid()}`,
+      name,
+      number,
     };
-    
-    if (this.state.contacts.some(el => el.name === name && el.number === number)) {
+
+    const isExist = this.state.contacts.some(
+      el => el.name.toLowerCase() === name.toLowerCase() || el.number === number
+    );
+
+    if (isExist) {
       alert('Contact already exists');
-    } else {
-      this.setState(prevState => ({
-    contacts: [...prevState.contacts, newContact],
-  }));
+      return;
     }
 
-    form.reset();
+    this.setState(prevState => ({
+      contacts: [...prevState.contacts, newContact],
+    }));
   };
 
-  deleteContact = (event) => {
-    console.log('sadsadas');
+  deleteContact = id => {
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== id),
+    }));
+  };
 
-  }
-  
+  getFilterContacts = () => {
+    return this.state.contacts.filter(contact =>
+      contact.name.toLowerCase().includes(this.state.filter.toLowerCase())
+    );
+  };
 
   render() {
-    // const { contacts, name } = this.state;
+    const filteredContacts = this.getFilterContacts();
     return (
       <div
         style={{
           height: '100vh',
-          display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           fontSize: 40,
@@ -61,12 +66,11 @@ export class App extends Component {
       >
         <ContactForm
           handleSubmit={this.handleSubmit}
-          handleChange={this.handleChange}
+          // handleChange={this.handleChange}
         />
         <Filter hendleChangeFilter={this.hendleChangeFilter} />
         <ContactList
-          contacts={this.state.contacts}
-          filter={this.state.filter}
+          contacts={filteredContacts}
           deleteContact={this.deleteContact}
         />
       </div>
