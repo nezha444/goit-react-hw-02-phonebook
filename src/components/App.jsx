@@ -21,7 +21,10 @@ export class App extends Component {
     const parsedLocalDataContacts = JSON.parse(localDataContacts);
     console.log(parsedLocalDataContacts);
 
-    if (parsedLocalDataContacts.length !== this.state.contacts.length) {
+    if (
+      parsedLocalDataContacts &&
+      parsedLocalDataContacts.length !== this.state.contacts.length
+    ) {
       this.setState({ contacts: parsedLocalDataContacts });
     }
   }
