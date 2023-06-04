@@ -11,23 +11,7 @@ export class App extends Component {
     filter: '',
   };
 
-  componentDidMount() {
-    const localDataContacts = localStorage.getItem(LOCAL_NAME);
-    const parsedLocalDataContacts = JSON.parse(localDataContacts);
 
-    if (parsedLocalDataContacts) {
-      this.setState({ contacts: parsedLocalDataContacts });
-    }
-  }
-
-  componentDidUpdate(_, prevState) {
-    if (prevState.contacts !== this.state.contacts) {
-      localStorage.setItem(
-        LOCAL_NAME,
-        JSON.stringify(Array.from(this.state.contacts))
-      );
-    }
-  }
 
   hendleChangeFilter = event => {
     this.setState({ filter: event.target.value });
